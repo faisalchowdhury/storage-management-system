@@ -96,3 +96,22 @@ exports.markAsFavorite = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+// all favorite files
+
+exports.getFavoriteFiles = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const favoriteFiles = await File.find({ owner: userId, favorite: true })
+      .select("-data")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      message: "Favorite files fetched successfully",
+      files: favoriteFiles,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
