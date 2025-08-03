@@ -13,6 +13,7 @@ const {
   deleteFile,
   duplicateFile,
   getRecentFiles,
+  getFilesByDate,
 } = require("../controllers/file.controller");
 
 // Upload single file (protected route)
@@ -36,3 +37,5 @@ router.delete("/:fileId", verifyToken, deleteFile);
 router.post("/duplicate/:id", verifyToken, duplicateFile);
 //recent upload
 router.get("/recent", verifyToken, getRecentFiles);
+// get files by date
+router.get("/by-date", verifyToken, getFilesByDate);

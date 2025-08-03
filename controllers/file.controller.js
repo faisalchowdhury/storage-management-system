@@ -232,3 +232,35 @@ exports.getRecentFiles = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
+// files by calender date
+
+exports.getFilesByDate = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { date } = req.query;
+
+    if (!date) {
+      return res.status(400).json({ message: "Date is required" });
+    }
+
+    const selectedDate = new Date(date);
+    const nextDate = new Date(selectedDate);
+    nextDate.setDate(nextDate.getDate() + 1);
+
+    const files = await File.find({
+      owner: userId,
+      createdAt: {
+        $gte: selectedDate,
+        $lt: nextDate,
+      },
+    })
+      .select("-data")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ files });
+  } catch (error) {
+    console.error("Error in ", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
