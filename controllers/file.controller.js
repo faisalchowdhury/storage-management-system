@@ -145,3 +145,70 @@ exports.renameFile = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+// delete file
+
+exports.deleteFile = async (req, res) => {
+  try {
+    const { fileId } = req.params;
+    const userId = req.user._id;
+
+    const file = await File.findById(fileId);
+
+    if (!file) {
+      return res.status(404).json({ message: "File not found" });
+    }
+
+    if (file.owner.toString() !== userId.toString()) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to delete this file" });
+    }
+
+    await File.findByIdAndDelete(fileId);
+
+    return res.status(200).json({ message: "File deleted successfully" });
+  } catch (error) {
+    console.error("Delete File Error:", error);
+    return res
+      .status(500)
+      .json({ message: "Server error while deleting file" });
+  }
+};
+
+// duplicate file
+exports.duplicateFile = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const ownerId = req.user._id;
+
+    const file = await File.findOne({ _id: id, owner: ownerId });
+    if (!file) {
+      return res.status(404).json({ message: "File not found" });
+    }
+
+    const duplicatedFile = await File.create({
+      filename: `Copy of ${file.filename}`,
+      fileType: file.fileType,
+      data: file.data,
+      size: file.size,
+      owner: file.owner,
+      folder: file.folder,
+      favorite: false,
+      isPrivate: file.isPrivate,
+      password: null,
+    });
+
+    res
+      .status(201)
+      .json({
+        message: "File duplicated successfully",
+        success: "Successfully Duplicated",
+      });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error duplicating file", error: error.message });
+  }
+};

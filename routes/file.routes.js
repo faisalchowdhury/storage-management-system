@@ -10,6 +10,8 @@ const {
   markAsFavorite,
   getFavoriteFiles,
   renameFile,
+  deleteFile,
+  duplicateFile,
 } = require("../controllers/file.controller");
 
 // Upload single file (protected route)
@@ -27,3 +29,7 @@ router.get("/favorite", verifyToken, getFavoriteFiles);
 
 // rename file
 router.patch("/rename/:fileId", verifyToken, renameFile);
+// delete file
+router.delete("/:fileId", verifyToken, deleteFile);
+//duplicate
+router.post("/duplicate/:id", verifyToken, duplicateFile);
