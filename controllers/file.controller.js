@@ -115,3 +115,33 @@ exports.getFavoriteFiles = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+// Rename file
+
+exports.renameFile = async (req, res) => {
+  try {
+    const { fileId } = req.params;
+    const { newFilename } = req.body;
+    const userId = req.user._id;
+
+    if (!newFilename || newFilename.trim() === "") {
+      return res.status(400).json({ message: "New filename is required" });
+    }
+
+    const file = await File.findOne({ _id: fileId, owner: userId });
+    if (!file) {
+      return res.status(404).json({ message: "File not found" });
+    }
+
+    file.filename = newFilename.trim();
+    await file.save();
+
+    res.status(200).json({
+      message: "File renamed successfully",
+      fileId: file._id,
+      newFilename: file.filename,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};

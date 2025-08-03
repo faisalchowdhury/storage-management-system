@@ -9,6 +9,7 @@ const {
   accessPrivateFile,
   markAsFavorite,
   getFavoriteFiles,
+  renameFile,
 } = require("../controllers/file.controller");
 
 // Upload single file (protected route)
@@ -23,3 +24,6 @@ module.exports = router;
 
 // get all fav files
 router.get("/favorite", verifyToken, getFavoriteFiles);
+
+// rename file
+router.patch("/rename/:fileId", verifyToken, renameFile);
