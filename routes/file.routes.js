@@ -24,7 +24,6 @@ router.post("/access/:fileId", accessPrivateFile);
 
 // make a file favorite
 router.patch("/favorite/:fileId", verifyToken, markAsFavorite);
-module.exports = router;
 
 // get all fav files
 router.get("/favorite", verifyToken, getFavoriteFiles);
@@ -39,3 +38,4 @@ router.post("/duplicate/:id", verifyToken, duplicateFile);
 router.get("/recent", verifyToken, getRecentFiles);
 // get files by date
 router.get("/by-date", verifyToken, getFilesByDate);
+module.exports = router;

@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const errorHandler = require("./middlewares/error.middleware");
-
+const userRoutes = require("./routes/user.routes");
 const authRoutes = require("./routes/auth.routes");
 
 dotenv.config();
@@ -23,5 +23,5 @@ app.use("/api/folder", folderRoutes);
 const fileRoutes = require("./routes/file.routes");
 app.use("/api/file", fileRoutes);
 
-
+app.use("/api/user", userRoutes);
 module.exports = app;
