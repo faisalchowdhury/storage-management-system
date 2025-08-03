@@ -95,3 +95,31 @@ exports.forgotPassword = async (req, res) => {
 
   res.json({ message: "Reset code sent", resetCode });
 };
+
+// Verify code and reset pass
+
+exports.resetPassword = async (req, res) => {
+  const { email, resetCode, newPassword } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  if (
+    user.resetCode !== resetCode ||
+    !user.resetCodeExpire ||
+    user.resetCodeExpire < Date.now()
+  ) {
+    return res.status(400).json({ message: "Invalid or expired reset code" });
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  user.password = hashedPassword;
+  user.resetCode = null;
+  user.resetCodeExpire = null;
+  await user.save();
+
+  res.json({ message: "Password reset successful" });
+};
