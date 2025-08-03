@@ -39,8 +39,6 @@ exports.uploadFile = async (req, res) => {
 
 // Private file access
 
-
-
 exports.accessPrivateFile = async (req, res) => {
   try {
     const { fileId } = req.params;
@@ -69,6 +67,30 @@ exports.accessPrivateFile = async (req, res) => {
         uploadedAt: file.createdAt,
         buffer: file.data.toString("base64"),
       },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+// mark as favorite
+
+exports.markAsFavorite = async (req, res) => {
+  try {
+    const { fileId } = req.params;
+
+    const file = await File.findOne({ _id: fileId, owner: req.user._id });
+    if (!file) {
+      return res.status(404).json({ message: "File not found" });
+    }
+
+    file.favorite = !file.favorite;
+    await file.save();
+
+    res.status(200).json({
+      message: `File marked as ${file.favorite ? "favorite" : "not favorite"}`,
+      fileId: file._id,
+      favorite: file.favorite,
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
