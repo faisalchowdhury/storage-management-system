@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      default: "", 
+      default: "",
     },
     storageUsed: {
       type: Number,
@@ -28,9 +28,12 @@ const userSchema = new mongoose.Schema(
     },
     storageLimit: {
       type: Number,
-      default: 1073741824, // 1GB 
+      default: 16106127360, // 15GB
     },
+    resetCode: String,
+    resetCodeExpire: Date,
   },
+
   { timestamps: true }
 );
 

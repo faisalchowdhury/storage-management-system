@@ -5,5 +5,5 @@ const verifyToken = require("../middlewares/auth.middleware");
 
 const { updateProfile } = require("../controllers/user.controller");
 
-router.put("/profile", verifyToken, updateProfile);
+router.post("/profile", verifyToken, updateProfile);
 module.exports = router;
