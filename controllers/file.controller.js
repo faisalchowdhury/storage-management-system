@@ -200,15 +200,35 @@ exports.duplicateFile = async (req, res) => {
       password: null,
     });
 
-    res
-      .status(201)
-      .json({
-        message: "File duplicated successfully",
-        success: "Successfully Duplicated",
-      });
+    res.status(201).json({
+      message: "File duplicated successfully",
+      success: "Successfully Duplicated",
+    });
   } catch (error) {
     res
       .status(500)
       .json({ message: "Error duplicating file", error: error.message });
+  }
+};
+
+// recent upload
+
+exports.getRecentFiles = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const recentFiles = await File.find({ owner: userId })
+      .select("-data")
+      .sort({ createdAt: -1 })
+      .limit(10);
+
+    res.status(200).json({
+      success: true,
+      message: "Recent files fetched successfully",
+      files: recentFiles,
+    });
+  } catch (error) {
+    console.error("Error fetching recent files:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };

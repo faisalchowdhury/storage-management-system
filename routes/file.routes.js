@@ -12,6 +12,7 @@ const {
   renameFile,
   deleteFile,
   duplicateFile,
+  getRecentFiles,
 } = require("../controllers/file.controller");
 
 // Upload single file (protected route)
@@ -33,3 +34,5 @@ router.patch("/rename/:fileId", verifyToken, renameFile);
 router.delete("/:fileId", verifyToken, deleteFile);
 //duplicate
 router.post("/duplicate/:id", verifyToken, duplicateFile);
+//recent upload
+router.get("/recent", verifyToken, getRecentFiles);
