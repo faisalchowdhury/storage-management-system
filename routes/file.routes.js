@@ -31,7 +31,7 @@ router.get("/favorite", verifyToken, getFavoriteFiles);
 // rename file
 router.patch("/rename/:fileId", verifyToken, renameFile);
 // delete file
-router.delete("/:fileId", verifyToken, deleteFile);
+router.delete("/delete/:fileId", verifyToken, deleteFile);
 //duplicate
 router.post("/duplicate/:id", verifyToken, duplicateFile);
 //recent upload

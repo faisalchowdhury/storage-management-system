@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const File = require("../models/file");
 
 //upload file
@@ -74,7 +75,10 @@ exports.markAsFavorite = async (req, res) => {
   try {
     const { fileId } = req.params;
 
-    const file = await File.findOne({ _id: fileId, owner: req.user._id });
+    const file = await File.findOne({
+      _id: new mongoose.Types.ObjectId(fileId),
+      owner: new mongoose.Types.ObjectId(req.user._id),
+    });
     if (!file) {
       return res.status(404).json({ message: "File not found" });
     }

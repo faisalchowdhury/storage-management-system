@@ -5,13 +5,11 @@ const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
 
 const { sendEmail } = require("../utils/email");
-const crypto = require("crypto");
 
 exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser)
       return res.status(400).json({ message: "User already exists" });
@@ -19,7 +17,6 @@ exports.register = async (req, res) => {
     // Hashing password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
     const newUser = new User({
       name,
       email,
@@ -40,11 +37,9 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
