@@ -49,3 +49,63 @@ exports.deleteUserProfile = async (req, res) => {
     });
   }
 };
+
+// storage summery
+
+exports.getStorageStats = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const files = await File.find({
+      owner: new mongoose.Types.ObjectId(userId),
+    });
+
+    let totalSize = 0;
+    let imageSize = 0;
+    let pdfSize = 0;
+    let noteSize = 0;
+
+    files.forEach((file) => {
+      totalSize += file.size;
+
+      if (file.fileType === "image") imageSize += file.size;
+      else if (file.fileType === "pdf") pdfSize += file.size;
+      else if (file.fileType === "note") noteSize += file.size;
+    });
+
+    const user = await User.findById(userId);
+    const totalLimit = user.storageLimit;
+    const remainingSize = totalLimit - totalSize;
+
+    const toMB = (bytes) => (bytes / (1024 * 1024)).toFixed(2) + " MB";
+    const toGB = (bytes) => (bytes / (1024 * 1024 * 1024)).toFixed(2) + " GB";
+
+    res.status(200).json({
+      used: {
+        mb: toMB(totalSize),
+        gb: toGB(totalSize),
+      },
+      remaining: {
+        mb: toMB(remainingSize),
+        gb: toGB(remainingSize),
+      },
+      breakdown: {
+        image: {
+          mb: toMB(imageSize),
+          gb: toGB(imageSize),
+        },
+        pdf: {
+          mb: toMB(pdfSize),
+          gb: toGB(pdfSize),
+        },
+        note: {
+          mb: toMB(noteSize),
+          gb: toGB(noteSize),
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Storage stats error:", error.message);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
