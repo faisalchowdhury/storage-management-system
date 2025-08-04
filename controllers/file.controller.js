@@ -1,5 +1,7 @@
 const File = require("../models/file");
 const bcrypt = require("bcrypt");
+
+//upload file
 exports.uploadFile = async (req, res) => {
   try {
     const { folder, fileType, isPrivate, password } = req.body;
@@ -9,7 +11,6 @@ exports.uploadFile = async (req, res) => {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    // Hash password if provided
     let hashedPassword = null;
     if (password) {
       hashedPassword = password;
@@ -23,7 +24,7 @@ exports.uploadFile = async (req, res) => {
       owner: req.user._id,
       folder: folder || null,
       favorite: false,
-      isPrivate: isPrivate === "true", // form data comes as string
+      isPrivate: isPrivate === "true",
       password: hashedPassword,
     });
 
